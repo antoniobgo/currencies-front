@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useQuotesStore } from '@/stores/quotes'
-import IntradayChart from '@/components/IntradayChart.vue'
 import HistoryChart from '@/components/HistoryChart.vue'
+import IntradayChart from '@/components/IntradayChart.vue'
 import SummaryCards from '@/components/SummaryCards.vue'
+import { useQuotesStore } from '@/stores/quotes'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
@@ -29,10 +29,15 @@ const isPositive = computed(() => (latestQuote.value?.pctChange ?? 0) >= 0)
 
 async function loadData() {
   loading.value = true
+
+  const end = new Date()
+  const start = new Date()
+  start.setDate(start.getDate() - period.value)
+
   try {
     await Promise.all([
       quotesStore.fetchTodayByCode(code.value),
-      quotesStore.fetchHistory(code.value),
+      quotesStore.fetchHistory(code.value,toDateParam(start), toDateParam(end)),
       quotesStore.fetchSummary(code.value, period.value),
     ])
   } finally {
@@ -40,10 +45,25 @@ async function loadData() {
   }
 }
 
+//TODO: verificar se colocar num pacote helpers ou algo do tipo
+function toDateParam(d: Date): string {
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+
 async function changePeriod(p: number) {
   period.value = p
+
+
+  const end = new Date()
+  const start = new Date()
+  start.setDate(start.getDate() - p)
+
   await Promise.all([
-    quotesStore.fetchHistory(code.value),
+    quotesStore.fetchHistory(code.value, toDateParam(start), toDateParam(end)),
     quotesStore.fetchSummary(code.value, p),
   ])
 }
