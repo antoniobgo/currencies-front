@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { Line } from 'vue-chartjs'
+import type { CurrencyDailyCloseResponse } from '@/types'
 import {
-  Chart as ChartJS,
   CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
+  Chart as ChartJS,
   Filler,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Tooltip,
   type ChartOptions,
 } from 'chart.js'
-import type { CurrencyDailyCloseResponse } from '@/types'
+import { computed } from 'vue'
+import { Line } from 'vue-chartjs'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler)
 
@@ -19,7 +19,7 @@ const props = defineProps<{ closes: CurrencyDailyCloseResponse[] }>()
 
 const chartData = computed(() => ({
   labels: props.closes.map(c =>
-    new Date(c.date + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
+    new Date(c.date + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })
   ),
   datasets: [
     {
