@@ -12,6 +12,7 @@ import {
   type ChartOptions,
 } from 'chart.js'
 import type { CurrencyQuoteResponse } from '@/types'
+import { formatCurrency } from '@/utils/format'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler)
 
@@ -42,7 +43,7 @@ const options: ChartOptions<'line'> = {
   plugins: {
     legend: { display: false },
     tooltip: {
-      callbacks: { label: ctx => `  ${Number(ctx.raw).toFixed(4)}` },
+      callbacks: { label: ctx => `  ${formatCurrency(Number(ctx.raw), 4)}` },
     },
   },
   scales: {
@@ -52,7 +53,7 @@ const options: ChartOptions<'line'> = {
     },
     y: {
       grid: { color: 'rgba(0,0,0,0.04)' },
-      ticks: { callback: v => Number(v).toFixed(3), font: { size: 11 } },
+      ticks: { callback: v => formatCurrency(Number(v), 3), font: { size: 11 } },
     },
   },
 }

@@ -2,15 +2,13 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { CurrencyQuoteResponse } from '@/types'
+import { formatCurrency, formatPercent } from '@/utils/format'
 
 const props = defineProps<{ quote: CurrencyQuoteResponse }>()
 const router = useRouter()
 
 const isPositive = computed(() => props.quote.pctChange >= 0)
-const pctFormatted = computed(() => {
-  const sign = isPositive.value ? '+' : ''
-  return `${sign}${props.quote.pctChange.toFixed(2)}%`
-})
+const pctFormatted = computed(() => formatPercent(props.quote.pctChange))
 </script>
 
 <template>
@@ -33,11 +31,11 @@ const pctFormatted = computed(() => {
       </span>
     </div>
     <p class="text-2xl font-bold text-gray-900 tabular-nums">
-      {{ Number(quote.bid).toFixed(4) }}
+      {{ formatCurrency(Number(quote.bid)) }}
     </p>
     <div class="flex gap-4 mt-2 text-xs text-gray-400 tabular-nums">
-      <span>↑ {{ Number(quote.high).toFixed(4) }}</span>
-      <span>↓ {{ Number(quote.low).toFixed(4) }}</span>
+      <span>↑ {{ formatCurrency(Number(quote.high)) }}</span>
+      <span>↓ {{ formatCurrency(Number(quote.low)) }}</span>
     </div>
   </button>
 </template>
