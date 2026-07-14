@@ -3,6 +3,7 @@ import HistoryChart from '@/components/HistoryChart.vue'
 import IntradayChart from '@/components/IntradayChart.vue'
 import SummaryCards from '@/components/SummaryCards.vue'
 import { useQuotesStore } from '@/stores/quotes'
+import { formatCurrency, formatPercent } from '@/utils/format'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -90,7 +91,7 @@ watch(code, loadData)
             :class="isPositive ? 'text-emerald-600 bg-emerald-50' : 'text-red-500 bg-red-50'"
             class="text-sm font-semibold px-2.5 py-0.5 rounded-full"
           >
-            {{ isPositive ? '+' : '' }}{{ latestQuote.pctChange.toFixed(2) }}%
+            {{ formatPercent(latestQuote.pctChange) }}
           </span>
         </div>
         <p v-if="latestQuote" class="text-sm text-gray-500">{{ latestQuote.name }}</p>
@@ -98,10 +99,10 @@ watch(code, loadData)
 
       <div v-if="latestQuote" class="sm:text-right">
         <p class="text-3xl font-bold text-gray-900 tabular-nums">
-          {{ Number(latestQuote.bid).toFixed(4) }}
+          {{ formatCurrency(Number(latestQuote.bid)) }}
         </p>
         <p class="text-xs text-gray-400 mt-0.5 tabular-nums">
-          ↑ {{ Number(latestQuote.high).toFixed(4) }} &nbsp;·&nbsp; ↓ {{ Number(latestQuote.low).toFixed(4) }}
+          ↑ {{ formatCurrency(Number(latestQuote.high)) }} &nbsp;·&nbsp; ↓ {{ formatCurrency(Number(latestQuote.low)) }}
         </p>
       </div>
     </div>
